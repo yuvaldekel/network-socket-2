@@ -7,9 +7,11 @@ def main():
         my_socket.connect(("127.0.0.1", 8820))
         my_socket.send(what_to_send.encode())
         data = my_socket.recv(1024).decode()
+        if what_to_send != '' and data == '':
+            raise Exception
         print(data)
         
-    except ConnectionRefusedError:
+    except:
         print("Error receiving data back")
     finally:
         my_socket.close()
