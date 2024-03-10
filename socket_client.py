@@ -15,10 +15,7 @@ def main():
         print(data)
         
     except Exception as e:
-        print("Error: {}".format(e))
-    except Exception as e:
-        print("Error: {}".format(e))
-        
+        print("Error: {}".format(e))     
     finally:
         my_socket.close()
 
