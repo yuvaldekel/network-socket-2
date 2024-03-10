@@ -11,8 +11,8 @@ def main():
             raise Exception
         print(data)
         
-    except:
-        print("Error receiving data back")
+    except Exception as e:
+        print("Error: {}".format(e))
     finally:
         my_socket.close()
 
