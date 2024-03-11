@@ -1,6 +1,7 @@
 import socket
 import datetime
 import random
+import protocol
 
 NAME = "SuperServer"
 
@@ -12,32 +13,37 @@ def main():
 
         (client_socket, client_address) = server_socket.accept()
         print("Client connected his address {}".format(client_address))
+        
         while True:
-            length_message = client_socket.recv(2).decode()
-            data = client_socket.recv(length_message).decode()
-            print("Client sent: {}".format(data))
-            if data == 'DATE':
+            is_okay, data = protocol.get_msg(client_socket)
+            
+            if not is_okay:
+                junk = client_socket.recv(1024).decode()
+                message = protocol.create_msg("Wrong Protocol")
+                client_socket.send(message.encode())
+            
+            if not protocol.check_cmd(data):
+                message = protocol.create_msg("Wrong Protocol")
+                client_socket.send(message.encode())
+            
+            elif data == 'DATE':
                 date = str(datetime.datetime.now())
-                length = str(len(date))
-                zfill_length = length.zfill(2)
-                message = zfill_length + date
+                print(date)
+                message = protocol.create_msg(date)
                 client_socket.send(message.encode())
+            
             elif data == 'WHORU':
-                length = str(len(NAME))
-                zfill_length = length.zfill(2)
-                message = zfill_length + NAME
+                message = protocol.create_msg(NAME)
                 client_socket.send(message.encode())
+            
             elif data == 'RAND':
                 number = str(random.randint(1,10))
-                length = str(len(number))
-                zfill_length = length.zfill(2)
-                message = zfill_length + number
+                message = protocol.create_msg(number)
                 client_socket.send(message.encode())
+            
             elif data == 'EXIT':
                 client_socket.close()
                 break
-            else:
-                client_socket.send("Problem with the request".encode())
 
 if __name__ == "__main__":
     main()
