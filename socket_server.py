@@ -13,16 +13,26 @@ def main():
         (client_socket, client_address) = server_socket.accept()
         print("Client connected his address {}".format(client_address))
         while True:
-            data = client_socket.recv(5).decode()
+            length_message = client_socket.recv(2).decode()
+            data = client_socket.recv(length_message).decode()
             print("Client sent: {}".format(data))
             if data == 'DATE':
                 date = str(datetime.datetime.now())
-                client_socket.send(date.encode())
+                length = str(len(date))
+                zfill_length = length.zfill(2)
+                message = zfill_length + date
+                client_socket.send(message.encode())
             elif data == 'WHORU':
-                client_socket.send(NAME.encode())
+                length = str(len(NAME))
+                zfill_length = length.zfill(2)
+                message = zfill_length + NAME
+                client_socket.send(message.encode())
             elif data == 'RAND':
                 number = str(random.randint(1,10))
-                client_socket.send(number.encode())
+                length = str(len(number))
+                zfill_length = length.zfill(2)
+                message = zfill_length + number
+                client_socket.send(message.encode())
             elif data == 'EXIT':
                 client_socket.close()
                 break
