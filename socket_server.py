@@ -16,31 +16,25 @@ def main():
         
         while True:
             is_okay, data = protocol.get_msg(client_socket)
-            
             if not is_okay:
-                junk = client_socket.recv(1024).decode()
                 message = protocol.create_msg("Wrong Protocol")
                 client_socket.send(message.encode())
             
-            if not protocol.check_cmd(data):
+            elif not protocol.check_cmd(data):
                 message = protocol.create_msg("Wrong Protocol")
                 client_socket.send(message.encode())
             
             elif data == 'DATE':
                 date = str(datetime.datetime.now())
-                print(date)
                 message = protocol.create_msg(date)
-                client_socket.send(message.encode())
-            
+                client_socket.send(message.encode())            
             elif data == 'WHORU':
                 message = protocol.create_msg(NAME)
                 client_socket.send(message.encode())
-            
             elif data == 'RAND':
                 number = str(random.randint(1,10))
                 message = protocol.create_msg(number)
                 client_socket.send(message.encode())
-            
             elif data == 'EXIT':
                 client_socket.close()
                 break

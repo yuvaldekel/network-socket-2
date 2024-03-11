@@ -22,15 +22,13 @@ def main():
 
             message = protocol.create_msg(message)
             my_socket.send(message.encode())
-            
+
             is_okay, data = protocol.get_msg(my_socket)
             if is_okay:
                 if data == '':
-                    print("You stopped the connection")
+                    print("You terminate the connection")
                     break
                 print("server sent {}".format(data))
-            else:
-                data = my_socket.recv(1024).decode()
 
     except Exception as e:
         print("Error: {}".format(e))     

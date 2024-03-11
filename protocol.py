@@ -21,4 +21,5 @@ def get_msg(my_socket):
         data = my_socket.recv(length_message).decode()
         return True, data
     except ValueError:
+        junk =  my_socket.recv(1024).decode()
         return False, "Error"
