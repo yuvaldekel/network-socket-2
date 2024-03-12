@@ -33,8 +33,9 @@ def handle_request(command , params):
 
 #send the respond 
 #if the command is exit close the connection
-#if it is send_photo use the handle request to get the message from the command and the status 
-#for all other commands use the handler to get the message create the  
+#if the command is send_photo use the handle request to get the message from the command and the status 
+#if it read the image properly send the response, if not send the error
+#for all other commands use the handler to get the message create it and send it  
 def send_respond(client_socket, cmd ,params):
     if cmd == "EXIT":
         client_socket.close()

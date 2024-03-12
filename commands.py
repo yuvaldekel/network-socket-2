@@ -2,6 +2,7 @@ import shutil
 import glob
 import os
 import subprocess
+import protocol
 from pyautogui import screenshot
 
 IMAGE_PATH = r'C:\Users\yonat\Documents\Yuval\devops\networking\network-socket-2\screen_server.jpg'
@@ -64,15 +65,16 @@ def take_screenshot(params):
     except Exception as e:
         return "Error {}".format(e)
 
-#read the image file return the message follow by the protocol.
-#the message has the image size and the image it self. return also true if it read it okay otherwise false
+#try to read the image return the message followed by the protocol requirements.
+#the message is composed of the image size and the image it self.
+#return boolean for the success of the function.
 def send_photo(params):
     try:
         image_size = os.path.getsize(IMAGE_PATH)
-        message = str(len(str(image_size))).zfill(4) + str(image_size)
+        message = protocol.create_msg(image_size)
         with open(IMAGE_PATH, 'rb') as file:
             bytes_read = file.read()
-            message = message.encode() + bytes_read
+        message = message.encode() + bytes_read
         return True, message
     except Exception as e:
         return False, f"Error: {e}"
