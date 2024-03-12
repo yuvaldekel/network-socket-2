@@ -1,34 +1,35 @@
 import socket
 import protocol
 
+IMAGE = r"C:\Users\yonat\Documents\Yuval\devops\networking\network-socket-2\screen_client.jpg"
+
+def handle_respond(my_socket, data, cmd):
+    if cmd.upper() == "SEND_PHOTO":
+        image_bytes = bytes(my_socket.recv(int(data)))
+        with open(IMAGE, 'wb') as image_file:
+            image_file.write(bytes(image_bytes))
+            
+    if data != "":
+        print(data)
+
+
 def main():
+    print('Welcome to remote computer application. Available commands are:\n')
+    print('TAKE_SCREENSHOT\nSEND_PHOTO\nDIR\nDELETE\nCOPY\nEXECUTE\nDATE\nEXIT')
+
     try:
         my_socket = socket.socket()
         my_socket.connect(("127.0.0.1", 8820))
          
         while True:
-            what_to_send = 0
-            message = ''
-            what_to_send = int(input("what would you like to send to the server:\npress one for DATE,\npress two for WHORU,\npress two for RAND,\npress four for EXIT. "))
-            
-            if what_to_send == 1:
-                message = "DATE"
-            elif what_to_send == 2:
-                message = "WHORU"
-            elif what_to_send == 3:
-                message = "RAND"
-            elif what_to_send == 4:
-                message = "EXIT"
-
-            message = protocol.create_msg(message)
-            my_socket.send(message.encode())
-
+            cmd = input("Wrote your command: ")
+            cmd_msg = protocol.create_msg(cmd)
+            my_socket.send(cmd_msg)          
             is_okay, data = protocol.get_msg(my_socket)
             if is_okay:
-                if data == '':
-                    print("You terminate the connection")
-                    break
-                print("server sent {}".format(data))
+                handle_respond(my_socket, data, cmd)
+            elif data == "":
+                break
 
     except Exception as e:
         print("Error: {}".format(e))     
