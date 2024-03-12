@@ -6,6 +6,8 @@ from pyautogui import screenshot
 
 IMAGE_PATH = r'C:\Users\yonat\Documents\Yuval\devops\networking\network-socket-2\screen_server.jpg'
 
+
+#dir command, return files in a given directory returns the error if occurred 
 def dir(params):
     try:
         files = glob.glob(params[0])
@@ -15,6 +17,7 @@ def dir(params):
     except Exception as e:
         return "Error showing file is {} directory: {}.".format(params[0], e)
     
+#delete a file if succeeded returns nothing return the error if occurred 
 def delete(params):
     try:
         os.remove(params[0])
@@ -26,6 +29,7 @@ def delete(params):
     except PermissionError:
         return "Can not delete {}, you don't have permission.".format(params[0])   
     
+#copy file to other location returns the error if occurred
 def copy(params):
     try:
         shutil.copy(params[0], params[1])
@@ -39,6 +43,7 @@ def copy(params):
     except FileNotFoundError:
         return "Can not copy {}, file does not exist.".format(params[0])
 
+#execute program returns the error if occurred 
 def execute(params):
     try:
         subprocess.call(params[0])
@@ -50,6 +55,7 @@ def execute(params):
     except FileNotFoundError:
         return "Can not call {}, file does not exist.".format(params[0])
     
+#take screen shot
 def take_screenshot(params):
     try:
         image = screenshot()
@@ -58,6 +64,8 @@ def take_screenshot(params):
     except Exception as e:
         return "Error {}".format(e)
 
+#read the image file return the message follow by the protocol.
+#the message has the image size and the image it self. return also true if it read it okay otherwise false
 def send_photo(params):
     try:
         image_size = os.path.getsize(IMAGE_PATH)
