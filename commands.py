@@ -1,4 +1,3 @@
-
 import shutil
 import glob
 import os
@@ -60,11 +59,12 @@ def take_screenshot(params):
         return "Error {}".format(e)
 
 def send_photo(params):
-    message = ''
-    image_size = os.path.getsize(IMAGE_PATH)
-    message = str(len(str(image_size))).zfill(4) + str(image_size)
-    print(message)
-    file = open(IMAGE_PATH, 'rb')
-    bytes_read = file.read()
-    message = message.encode() + bytes_read
-    return message
+    try:
+        image_size = os.path.getsize(IMAGE_PATH)
+        message = str(len(str(image_size))).zfill(4) + str(image_size)
+        with open(IMAGE_PATH, 'rb') as file:
+            bytes_read = file.read()
+            message = message.encode() + bytes_read
+        return True, message
+    except Exception as e:
+        return False, f"Error: {e}"

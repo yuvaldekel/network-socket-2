@@ -26,7 +26,27 @@ def handle_request(command , params):
     if command == "DATE":
         return str(datetime.datetime.now())
     if command == "SEND_PHOTO":
-        return commands.send_photo(params)        
+        return commands.send_photo(params)
+
+def send_respond(client_socket, cmd ,params):
+    if cmd == "EXIT":
+        client_socket.close()
+        return True
+    if cmd == "SEND_PHOTO":
+        succeed, response = handle_request(cmd, params)
+        if succeed:
+            client_socket.send(response)
+            return False
+        else:
+            response = protocol.create_msg(response)
+            client_socket.send(response)
+            return False         
+    else:
+        response = handle_request(cmd, params)
+        response = protocol.create_msg(response)
+        client_socket.send(response)
+        return False
+
 
 def main():
     with socket.socket() as server_socket:
@@ -39,24 +59,17 @@ def main():
         
         while True:
             is_okay, data = protocol.get_msg(client_socket)
-            if not is_okay:
-                message = protocol.create_msg("Wrong Protocol")
-                client_socket.send(message)
-            else:
+            if is_okay:
                 validation, cmd, params= check_request(data)
                 if validation:
-                    if cmd == "EXIT":
-                        client_socket.close()
+                    is_exit = send_respond(client_socket, cmd, params)
+                    if is_exit:
                         break
-                    if cmd == "SEND_PHOTO":
-                        client_socket.send(handle_request(cmd, params))               
-                    else:
-                        response = handle_request(cmd, params)
-                        response = protocol.create_msg(response)
-                        client_socket.send(response)
                 else:
-                    message = protocol.create_msg("Problem with the input")
+                    message = protocol.create_msg("Wrong input, try again")
                     client_socket.send(message)
-
+            else:
+                message = protocol.create_msg("Wrong Protocol")
+                client_socket.send(message)
 if __name__ == "__main__":
     main()

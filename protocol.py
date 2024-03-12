@@ -21,12 +21,12 @@ def create_msg(data):
 
 def get_msg(my_socket):
     try:
-        length_message = my_socket.recv(LENGTH_FIELD_SIZE).decode()
-        if length_message == '':
+        message_length = my_socket.recv(LENGTH_FIELD_SIZE).decode()
+        if message_length == '':
             return False, ''
-        length_message = int(length_message)
-        data = my_socket.recv(length_message).decode()
+        message_length = int(message_length)
+        data = my_socket.recv(message_length).decode()
         return True, data
     except ValueError:
         junk =  my_socket.recv(1024).decode()
-        return False, "Error"
+        return False, "Error receiving massage"
